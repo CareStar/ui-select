@@ -1,10 +1,11 @@
 {
-  "name": "angular-ui-select",  
-  "homepage": "https://github.com/angular-ui/ui-select",
+  "name": "angular-ui-select",
+  "version": "0.0.1",
+  "homepage": "https://github.com/JeffKingswood/ui-select",
   "authors": [
     "AngularUI"
   ],
-  "description": "AngularJS ui-select",
+  "description": "forked version of AngularJS ui-select",
   "main": [
     "dist/select.js",
     "dist/select.css"
