@@ -142,6 +142,11 @@ uis.directive('uiSelect',
           }
         });
 
+        //check if tagging-on-blur is enabled
+        attrs.$observe('taggingOnBlur', function () {
+           $select.taggingOnBlur = angular.isDefined(attrs.taggingOnBlur);
+        });
+
         attrs.$observe('taggingTokens', function() {
           if (attrs.tagging !== undefined) {
             var tokens = attrs.taggingTokens !== undefined ? attrs.taggingTokens.split('|') : [',','ENTER'];
@@ -200,7 +205,7 @@ uis.directive('uiSelect',
             } else {
               skipFocusser = true;
             }
-            $select.close(skipFocusser);
+            $select.close(skipFocusser, {resetSearchInput: !$select.taggingOnBlur});
             scope.$digest();
           }
           $select.clickTriggeredSelect = false;
@@ -378,7 +383,7 @@ uis.directive('uiSelect',
         };
 
         var opened = false;
-        
+
         scope.calculateDropdownPos = function() {
           if ($select.open) {
             dropdown = angular.element(element).querySelectorAll('.ui-select-dropdown');

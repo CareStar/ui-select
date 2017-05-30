@@ -206,6 +206,11 @@ describe('ui-select tests', function () {
     scope.$digest();
   }
 
+  function triggerBlur(element) {
+      var e = jQuery.Event("blur");
+      element.trigger(e);
+  }
+
   function isDropdownOpened(el) {
     // Does not work with jQuery 2.*, have to use jQuery 1.11.*
     // This will be fixed in AngularJS 1.3
@@ -1423,6 +1428,47 @@ describe('ui-select tests', function () {
 
     expect(scope.onOpenCloseFn.calls.count()).toBe(2);
   });
+
+  it('should allow creating tag on blur in multiple select mode with tagging-on-blur enabled', function() {
+
+    var el = compileTemplate(
+        '<ui-select multiple tagging tagging-label="false" tagging-on-blur ng-model="selection.selected" theme="bootstrap" sortable="true" ng-disabled="disabled" style="width: 300px;" title="Choose a color"> \
+          <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+          <ui-select-choices repeat="item in []"> \
+            {{item}} \
+          </ui-select-choices> \
+        </ui-select>'
+    );
+
+    clickMatch(el);
+    var searchInput = el.find('.ui-select-search');
+    searchInput.click();
+    setSearchText(el, 'should be created on blur');
+    triggerBlur(searchInput);
+
+    expect($(el).scope().$select.selected).toEqual(['should be created on blur']);
+  });
+
+  it('should not create tag on blur in multiple select mode with tagging-on-blur disabled', function() {
+
+    var el = compileTemplate(
+        '<ui-select multiple tagging tagging-label="false" ng-model="selection.selected" theme="bootstrap" sortable="true" ng-disabled="disabled" style="width: 300px;" title="Choose a color"> \
+          <ui-select-match placeholder="Pick one...">{{$select.selected.name}}</ui-select-match> \
+          <ui-select-choices repeat="item in []"> \
+            {{item}} \
+          </ui-select-choices> \
+        </ui-select>'
+    );
+
+    clickMatch(el);
+    var searchInput = el.find('.ui-select-search');
+    searchInput.click();
+    setSearchText(el, 'should not be created on blur');
+    triggerBlur(searchInput);
+
+    expect($(el).scope().$select.selected).toEqual([]);
+  });
+
 
   it('should allow creating tag in single select mode with tagging enabled', function () {
 

@@ -439,15 +439,21 @@ uis.controller('uiSelectCtrl',
     }
   };
 
-  // Closes the dropdown
-  ctrl.close = function(skipFocusser) {
+    // Closes the dropdown
+    ctrl.close = function(skipFocusser, options) {
+    if (options === undefined) options = {};
+    if (options.resetSearchInput === undefined) options.resetSearchInput = true;
+
     if (!ctrl.open) return;
     if (ctrl.ngModel && ctrl.ngModel.$setTouched) ctrl.ngModel.$setTouched();
+    if(options.resetSearchInput) {
+        _resetSearchInput();
+    }
+
     ctrl.open = false;
-    _resetSearchInput();
     $scope.$broadcast('uis:close', skipFocusser);
 
-  };
+    };
 
   ctrl.setFocus = function(){
     if (!ctrl.focus) ctrl.focusInput[0].focus();
@@ -652,6 +658,19 @@ uis.controller('uiSelectCtrl',
       e.stopPropagation();
     }
 
+  });
+
+  //Allow tagging on blur
+  ctrl.searchInput.on('blur', function () {
+      if ((ctrl.items.length > 0 || ctrl.tagging.isActivated) && ctrl.taggingOnBlur) {
+          ctrl.searchInput.triggerHandler('tagged');
+          var newItem = ctrl.search;
+          if (ctrl.tagging.fct) {
+              newItem = ctrl.tagging.fct(newItem);
+          }
+
+          if (newItem) ctrl.select(newItem, true);
+      }
   });
 
   ctrl.searchInput.on('paste', function (e) {
