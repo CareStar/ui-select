@@ -1,8 +1,6 @@
 forked version of angular ui-select
 
-
 ## Installation Methods
-
 ### npm
 ```
 $ npm install ui-select
